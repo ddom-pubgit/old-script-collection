@@ -2,6 +2,10 @@
 
 A tool for ensuring that removable drives in windows always get the same drive letter
 
+## For Support to Know
+
+Do not distribute this script without first reading the warnings and the Statement of Support below. Ensure you understand this in full and explain it to the customer before distributing the script.
+
 ## Workflow
 
 The script works in several steps:
@@ -12,6 +16,8 @@ The script works in several steps:
 4. For each identifier found, check against the authoritative list and confirm if the correct drive letter is assigned
 5. If not, try to set the drive letter
 6. By default, if the correct drive letter is already in use, the script defaults to sending a warning email -- this is to avoid potential conflicts or dismounting a drive during write operations. 
+
+## Statement of Support
 
 The script comes with **No Support**. It is provided as a courtesy and nothing more. There is no support, no guarantee, no patching/bugfixes. Feature Requests may be submitted, but there is no time frame for such requests
 
