@@ -2,7 +2,7 @@
 
 A tool for ensuring that removable drives in windows always get the same drive letter
 
-##Workflow
+## Workflow
 
 The script works in several steps:
 
