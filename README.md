@@ -15,7 +15,7 @@ The script works in several steps:
 
 The script comes with **No Support**. It is provided as a courtesy and nothing more. There is no support, no guarantee, no patching/bugfixes. Feature Requests may be submitted, but there is no time frame for such requests
 
-* Currently, [Veeam does not support multiple rotated repositories](https://helpcenter.veeam.com/docs/backup/vsphere/backup_repository_rotated.html?ver=100) on the same managed server. 
+* Currently, [Veeam does not support multiple rotated repositories](https://helpcenter.veeam.com/docs/backup/vsphere/backup_repository_rotated.html?ver=100) on a single managed server. 
 * This script **does not change or circumvent this fact**; such setups are explicitly unsupported
 * The script is merely a courtesy to allow normal functionality to continue, but any problems outside of the script will not be eligible for investigation
 * The script is to be used at your own risk. Again, no support or guarantee offered for this script.
