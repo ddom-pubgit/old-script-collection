@@ -9,7 +9,7 @@ $smtp = "127.0.0.1"
 $from = "test@test.com"
 $to = "test@test.com"
 [System.Net.ServicePointManager]::SecurityProtocol = 'TLS12' #Allowed values Ssl3, Tls, Tls11, Tls12
-$body= "There is a drive letter conflict for the rotated drives which requires your attention. Drive $($WhichDrive.DriveFName) has been inserted, but the required Drive Letter $($WhichDrive.RDLetter) is occupied"
+$body= "There is a drive letter conflict for the rotated drives which requires your attention. Drive $($WhichDrive.DriveFName) has been inserted, but the required Drive Letter $($WhichDrive.RDLetter) is occupied. The script has stopped until this is corrected"
 Send-MailMessage -SmtpServer $smtp  -To $to -From $from -Subject "Rotated Drive Intervention Needed" -Body $body
 }
 
@@ -27,6 +27,7 @@ Send-MailMessage -SmtpServer $smtp  -To $to -From $from -Subject "Rotated Drive 
 						Set-Partition -DriveLetter $driveletter -NewDriveLetter $WhichDrive.RDLetter
 				} else {
 					Send-WarningEmail
+					Exit
 				}
 			}	
 		}
