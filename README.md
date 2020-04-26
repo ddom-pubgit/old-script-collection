@@ -23,6 +23,7 @@ The script comes with **No Support**. It is provided as a courtesy and nothing m
 
 * Currently, [Veeam does not support multiple rotated repositories](https://helpcenter.veeam.com/docs/backup/vsphere/backup_repository_rotated.html?ver=100) on a single managed server. 
 * This script **does not change or circumvent this fact**; such setups are explicitly unsupported
+* This script does not offer a statement of support or a status of support for such setups. Any setup involving multiple Repositories backed by rotated drives on the same Managed Server is explicitly unsupported, and nothing changes this
 * The script is merely a courtesy to allow normal functionality to continue, but any problems outside of the script will not be eligible for investigation
 * The script is to be used at your own risk. Again, no support or guarantee offered for this script.
 
