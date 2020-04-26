@@ -4,7 +4,7 @@ A tool for ensuring that removable drives in windows always get the same drive l
 
 ## For Support to Know
 
-Do not distribute this script without first reading the warnings and the Statement of Support below. Ensure you understand this in full and explain it to the customer before distributing the script.
+Do not distribute this script without first reading the warnings and the Statement of Support below. Ensure you understand this in full and explain it to the customer before distributing the script. Ask David Domask if you don't understand the terms we distribute this script under
 
 ## Workflow
 
