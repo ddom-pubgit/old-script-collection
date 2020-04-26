@@ -36,6 +36,6 @@ while ($active -eq $null){
 					}
 				}	
 			}
-		#Start-Sleep 1
-	}		
+		}		
+	#Start-Sleep 1
 }
