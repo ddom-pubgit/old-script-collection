@@ -6,7 +6,7 @@ Editing to check for drives is simple, just change the gwmi query to fetch drive
 gwmi -Class Win32_TapeDrive
 #>
 
-#Configuration variables#
+#Configuration variables. Adjust these as necessary for the environment
 
 $logpath = "C:\temp"
 $ChangerNum = "2"
