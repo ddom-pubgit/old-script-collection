@@ -9,9 +9,10 @@ gwmi -Class Win32_TapeDrive
 #Configuration variables. Adjust these as necessary for the environment
 
 $logpath = "C:\temp"
-$ChangerNum = "2"
+$ChangerNum = "2" #Confirm how many should be connected to the tape server
+$Duration = "60480" #Value should be (total duration in seconds)/10. Default is 1 week. The script should not be aggressive, so feel free to run it for weeks even
 
-for($i=0;$i -lt "60480"; $i++){
+for($i=0;$i -lt "$Duration"; $i++){
 $params = gwmi -Namespace root\wmi -Class mschangerparameters
 if (!($params.Length -eq "$ChangerNum")){
 	add-content -path "$logpath\tapemonitor.log" -value (Get-Date)
