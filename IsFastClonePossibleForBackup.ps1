@@ -38,21 +38,18 @@ function Show-IsFastClonePossibleandClusterSize {
 	param(
 		[Object[]]$BackupRepositoryInfo
 		)
-		$FastClonePossible = $false
-		If($BackupRepositoryInfo.IsVirtualSyntheticEnabled -and $BackupRepositoryInfo.IsVirtualSyntheticAvailable){
-			$FastClonePossible = $True
-		}
 		$return = [ordered]@{
 			RepositoryID = $BackupRepositoryInfo.RepositoryID
-			FastClonePossible = $FastClonePossible
+			FastClonePossible = ($BackupRepositoryInfo.IsVirtualSyntheticEnabled -and $BackupRepositoryInfo.IsVirtualSyntheticAvailable)
         	RepoClusterSize = $BackupRepositoryInfo.ClusterSize
+			IsDedupEnabledWinOnly = $BackupRepositoryInfo.IsDedupEnabled
 		}
 		return $return
 	}
 
 $Backup = Get-VBRBackup -Name $BackupName
 $RestorePoints = Get-VBRRestorePoint -Backup $Backup
-$TargetRepository = $Backup.FindRepository()[0]
+$TargetRepository = $Backup.FindRepository()[0] #Jobs with Offloads will return multiple Repository Objects from FindRepository() but both will be PerformanceTier. Safe to simply set the first
 $StoragesStats = $RestorePoints.FindStorage() |Sort-Object -Property CreationTime -Descending |Select-Object -Property Partialpath,BlockAlignmentSize
 $Repositories = @()
 
