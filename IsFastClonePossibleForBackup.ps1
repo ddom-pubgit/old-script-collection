@@ -42,7 +42,7 @@ function Show-IsFastClonePossibleandClusterSize {
 		If($BackupRepositoryInfo.IsVirtualSyntheticEnabled -and $BackupRepositoryInfo.IsVirtualSyntheticAvailable){
 			$FastClonePossible = $True
 		}
-		return @{
+		$return = [ordered]@{
 			RepositoryID = $BackupRepositoryInfo.RepositoryID
 			FastClonePossible = $FastClonePossible
         	RepoClusterSize = $BackupRepositoryInfo.ClusterSize
