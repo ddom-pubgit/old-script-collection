@@ -29,8 +29,8 @@ function Get-ExtentFromScaleout {
 	param(
 		[string[]]$ScaleoutRepoName
 		)
-		$ScaleoutRepo = Get-VBRBackupRepository -Scaleout -Name $Repo.Name
-		$ScaleOutExtents = $ScaleoutRepo.Extent.Repository | out-null
+		$ScaleoutRepo = Get-VBRBackupRepository -Scaleout -Name $ScaleoutRepoName
+		$ScaleOutExtents = $ScaleoutRepo.Extent.Repository 
 		return $ScaleOutExtents
 	}
 
@@ -38,30 +38,26 @@ function Show-IsFastClonePossibleandClusterSize {
 	param(
 		[Object[]]$BackupRepositoryInfo
 		)
-		[hashtable]$return = @{}
 		$FastClonePossible = $false
-		If($BackupRepositoryInfo.IsVirtualSyntheticEnabled -eq $True -and $BackupRepositoryInfo.IsVirtualSyntheticAvailable -eq $True){
+		If($BackupRepositoryInfo.IsVirtualSyntheticEnabled -and $BackupRepositoryInfo.IsVirtualSyntheticAvailable){
 			$FastClonePossible = $True
 		}
-		$RepoClusterSize = $BackupRepositoryInfo.ClusterSize
-		$return.FastClonePossible = $FastClonePossible
-		$return.RepoClusterSize = $RepoClusterSize
-		return $return
+		return @{
+			RepositoryID = $BackupRepositoryInfo.RepositoryID
+			FastClonePossible = $FastClonePossible
+        	RepoClusterSize = $BackupRepositoryInfo.ClusterSize
 		}
+		return $return
+	}
 
 $Backup = Get-VBRBackup -Name $BackupName
 $RestorePoints = Get-VBRRestorePoint -Backup $Backup
-$TargetRepository = $Backup.FindRepository()
-If($TargetRepository.Count -gt 1){
-	$TargetRepository = $TargetRepository[0]
-}
+$TargetRepository = $Backup.FindRepository()[0]
 $StoragesStats = $RestorePoints.FindStorage() |Sort-Object -Property CreationTime -Descending |Select-Object -Property Partialpath,BlockAlignmentSize
 $Repositories = @()
-#Check if  Repository is Valid
-
 
 If($TargetRepository.Type -eq 'ExtendableRepository'){
-		$ExtentList = Get-ExtentFromScaleout -ScaleoutRepoName $Repository.Name
+		$ExtentList = Get-ExtentFromScaleout -ScaleoutRepoName $TargetRepository.Name
 		Foreach($Extent in $ExtentList){
 			If($Extent.Type -eq "LinuxLocal"){
 				$LinuxRepo = Get-LinuxRepositoryInfo -RepositoryID $Extent.id
@@ -90,4 +86,3 @@ If($TargetRepository.Type -eq "WinLocal" -or $TargetRepository.Type -eq "LinuxLo
 	$Repositories | Out-Host
 	$StoragesStats | Out-Host
 }
-
