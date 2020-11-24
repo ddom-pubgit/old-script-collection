@@ -7,7 +7,7 @@ Currently breaks with Agent backups (all types) when returning storages, will be
 <#Todo:
 
 - Add validation rules for EpAgentBackups (not returned by Get-VBRRestorepoint)
-- Add Validation check on SOBR for non-FastClone Possible repositories, and and include Repo field for storages
+- Add validation rules for why Fastclone is not posssible on a given repository
 #>
 
 param (
@@ -53,13 +53,13 @@ function Show-IsFastClonePossibleandClusterSize {
 	param(
 		[Object[]]$BackupRepositoryInfo
 		)
-		$return = [ordered]@{
+		$RepositoryInformation = [ordered]@{
 			RepositoryID = $BackupRepositoryInfo.RepositoryID
 			FastClonePossible = ($BackupRepositoryInfo.IsVirtualSyntheticEnabled -and $BackupRepositoryInfo.IsVirtualSyntheticAvailable)
 			RepoClusterSize = $BackupRepositoryInfo.ClusterSize
 			IsDedupEnabledWinOnly = $BackupRepositoryInfo.IsDedupEnabled
 		}
-		return $return
+		return $RepositoryInformation
 	}
 
 function Get-RepositoryTypeAndInfo {
@@ -73,26 +73,51 @@ function Get-RepositoryTypeAndInfo {
 	} elseif ($RepositoryToCheck.Type -eq "WinLocal"){
 		$RepoInfo = Get-WindowsRepositoryInfo -RepositoryID $RepositoryToCheck.id
 	}
-	$Repositories += (Show-IsFastClonePossibleandClusterSize -BackupRepositoryInfo $RepoInfo)
-	return	$Repositories
+	$RepositoryData += (Show-IsFastClonePossibleandClusterSize -BackupRepositoryInfo $RepoInfo)
+	return	$RepositoryData
 } 	
+
+function Get-StoragesPathsAndBlocksizeFromBackup {
+	param(
+		[Parameter(Mandatory=$true, Position=0)]
+		[Object[]]$Backup
+		#[Parameter(Mandatory=$true, Position=1)]
+		#[Object[]]$Repository
+	)
+	$Storages = $Backup[0].GetAllStorages()
+	$Repository = $Backup.FindRepository()[0]
+	$StoragePathsandBlocksize  = @()
+	if($Repository.Type -eq "ExtendableRepository"){
+		foreach($Storage in $Storages){
+			$Extent = $Repository.FindExtentRepo($Storage.Id)
+			$job = $Backup.FindJob()
+			$StoragePathsandBlocksize += New-Object -TypeName psobject -Property @{Extent=$Extent.Name;Path=$($Extent.Path.ToString(),$job.Name.ToString(),$Storage.filepath -join "\");BlockSize=$Storage.BlockAlignmentSize;CreationTime=$Storage.CreationTime}
+			}
+	} else {
+		$StoragePathsandBlocksize += $Storages | Sort-Object -Property CreationTime -Descending | Select-Object -Property PartialPath,BlockAlignmentSize
+	}
+	return $StoragePathsandBlocksize
+}
+
 
 $Backup = Get-VBRBackup -Name $BackupName
 $RestorePoints = Get-VBRRestorePoint -Backup $Backup
-$RepositoryToCheck = $Backup.FindRepository()[0] #Jobs with Offloads in Copy Mode will return multiple entries from FindRepository() but both will be PerformanceTier. Safe to simply set the first
-$StoragesStats = $RestorePoints.FindStorage() |Sort-Object -Property CreationTime -Descending |Select-Object -Property Partialpath,BlockAlignmentSize
-$Repositories = @()
+$TargetRepository = $Backup.FindRepository()[0] #Jobs with Offloads in Copy Mode will return multiple entries from FindRepository() but both will be PerformanceTier. Safe to simply set the first
+#$StoragesStats = $RestorePoints.FindStorage() |Sort-Object -Property CreationTime -Descending |Select-Object -Property Partialpath,BlockAlignmentSize
+$StoragesStats = Get-StoragesPathsAndBlocksizeFromBackup -Backup $Backup
+$RepositoryData = @()
 
-If($RepositoryToCheck.Type -eq 'ExtendableRepository'){
-		$ExtentList = Get-ExtentFromScaleout -ScaleoutRepoName $RepositoryToCheck.Name
-		Foreach($RepositoryToCheck in $ExtentList){
-			Get-RepositoryTypeAndInfo -RepositoryToCheck $RepositoryToCheck
+If($TargetRepository.Type -eq 'ExtendableRepository'){
+		$ExtentList = Get-ExtentFromScaleout -ScaleoutRepoName $TargetRepository.Name
+		Foreach($Extent in $ExtentList){
+			Get-RepositoryTypeAndInfo -RepositoryToCheck $Extent
 		}
-	$Repositories | Out-Host
-	$StoragesStats | Out-Host
+	
+	$RepositoryData | Out-Host
+	$StoragesStats| Sort-Object -Property Creationtime | Select-Object -Property Extent,Path,Blocksize | Out-Host
 } else {
-	Get-RepositoryTypeAndInfo -RepositoryToCheck $RepositoryToCheck
-	$Repositories | Out-Host
+	Get-RepositoryTypeAndInfo -RepositoryToCheck $TargetRepository
+	$RepositoryData | Out-Host
 	$StoragesStats | Out-Host
 }
 	
