@@ -55,7 +55,7 @@ function Show-IsFastClonePossibleandClusterSize {
 		)
 		$RepositoryInformation = [ordered]@{
 			RepositoryName = $RepositoryToCheck.Name
-			RepositoryID = $BackupRepositoryInfo.RepositoryID
+			RepositoryType = $RepositoryToCheck.Type
 			FastClonePossible = ($BackupRepositoryInfo.IsVirtualSyntheticEnabled -and $BackupRepositoryInfo.IsVirtualSyntheticAvailable)
 			RepoClusterSize = $BackupRepositoryInfo.ClusterSize
 			IsDedupEnabledWinOnly = $BackupRepositoryInfo.IsDedupEnabled
