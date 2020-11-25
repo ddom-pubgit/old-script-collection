@@ -1,12 +1,11 @@
 <# script returns the blocksize of Storages for a Backup and also the Repository Information.
 Works for Scaleout Repos and also Local Windows/Linux (should work for XFS)
+Should work with Agent Backups now
 Not Tested with CloudConnect Repos
-Currently breaks with Agent backups (all types) when returning storages, will be fixed in next version
+
 #>
 
 <#Todo:
-
-- Add validation rules for EpAgentBackups (not returned by Get-VBRRestorepoint)
 - Add validation rules for why Fastclone is not posssible on a given repository
 #>
 
@@ -85,7 +84,11 @@ function Get-StoragesPathsAndBlocksizeFromBackup {
 		#[Parameter(Mandatory=$true, Position=1)]
 		#[Object[]]$Repository
 	)
-	$Storages = $Backup[0].GetAllStorages()
+	if($Backup.JobType -eq 'EpAgentBackup'){
+		$Storages = $Backup[0].GetallChildrenStorages()
+	} else {
+		$Storages = $Backup[0].GetAllStorages()
+	}
 	$Repository = $Backup.FindRepository()[0]
 	$StoragePathsandBlocksize  = @()
 	if($Repository.Type -eq "ExtendableRepository"){
@@ -102,7 +105,7 @@ function Get-StoragesPathsAndBlocksizeFromBackup {
 
 
 $Backup = Get-VBRBackup -Name $BackupName
-$RestorePoints = Get-VBRRestorePoint -Backup $Backup
+#$RestorePoints = Get-VBRRestorePoint -Backup $Backup
 $TargetRepository = $Backup.FindRepository()[0] #Jobs with Offloads in Copy Mode will return multiple entries from FindRepository() but both will be PerformanceTier. Safe to simply set the first
 #$StoragesStats = $RestorePoints.FindStorage() |Sort-Object -Property CreationTime -Descending |Select-Object -Property Partialpath,BlockAlignmentSize
 $StoragesStats = Get-StoragesPathsAndBlocksizeFromBackup -Backup $Backup
