@@ -36,6 +36,7 @@ You will need to pass these from the values you stored in step 4.
 
 ### Example workflow
 
+```
 PS C:\Users\Administrator> $vmname = 'ddom_sql_test'
 PS C:\Users\Administrator> $backup = Get-VBRBackup -Name 'ddom-sql'
 PS C:\Users\Administrator> $backupdisks = Get-LastBackupDiskCBTInfo -Backup  $backup
@@ -45,3 +46,4 @@ Compare-BackupAndProducionDiskCBTInfo -BackupDisk $Disk -SnapshotDisks $Snap.Sna
 }
 ddom_sql_test [shared-spbsupstg04-ds06] DDom_SQL_test/DDom_SQL_test-000001.vmdk 1.359375 GB changed since last backup on 12/10/2020 00:22:15
 ddom_sql_test [shared-spbsupstg04-ds06] DDom_SQL_test/DDom_SQL_test_1-000001.vmdk 0 GB changed since last backup on 12/10/2020 00:22:15
+```
