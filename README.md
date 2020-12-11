@@ -41,8 +41,7 @@ PS C:\Users\Administrator> $backup = Get-VBRBackup -Name 'ddom-sql'
 PS C:\Users\Administrator> $backupdisks = Get-LastBackupDiskCBTInfo -Backup  $backup
 PS C:\Users\Administrator> $Snap = New-VMwareSnapshotDiskInfo -VMName $vmname
 PS C:\Users\Administrator> foreach($Disk in $BackupDisks){
->> Compare-BackupAndProducionDiskCBTInfo -BackupDisk $Disk -SnapshotDisks $Snap.SnapDisks -VMView $Snap.VMView -SnapView
- $Snap.SnapView
->> }
+Compare-BackupAndProducionDiskCBTInfo -BackupDisk $Disk -SnapshotDisks $Snap.SnapDisks -VMView $Snap.VMView -SnapView $Snap.SnapView
+}
 ddom_sql_test [shared-spbsupstg04-ds06] DDom_SQL_test/DDom_SQL_test-000001.vmdk 1.359375 GB changed since last backup on 12/10/2020 00:22:15
 ddom_sql_test [shared-spbsupstg04-ds06] DDom_SQL_test/DDom_SQL_test_1-000001.vmdk 0 GB changed since last backup on 12/10/2020 00:22:15
