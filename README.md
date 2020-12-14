@@ -17,6 +17,10 @@ The cmdlets must be used from a machine that meets the following requirementst
 - There will be some margin of error between the output of the commands and the data read during backup. This is due to the time between checking, and probably the influence of snapshots. Except several GB difference depending on the workload of the machine. (Could be more or less) Precise measurements under 1 MB will not be feasible based on how QueryDiskChangedAreas() works.
 - Be sure you are using the exact backup there are conerns about -- different backups will record different ChangeIDs, and the results will be invalid. This testing is best done live.
 
+### Small note
+
+Get-LastBackupDiskCBTInfo works for HyperV as well to retrieve RCT information. Will add an HV module once I've worked it out. 
+
 
 ##Workflow
 
