@@ -22,7 +22,7 @@ The cmdlets must be used from a machine that meets the following requirementst
 Get-LastBackupDiskCBTInfo works for HyperV as well to retrieve RCT information. Will add an HV module once I've worked it out. 
 
 
-##Workflow
+## Workflow
 
 1. Set $VMName to the name of the VM in question
 2. Set $Backup to the Backup that is in question with Get-VBRBackup
