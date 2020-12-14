@@ -27,11 +27,11 @@ Get-LastBackupDiskCBTInfo works for HyperV as well to retrieve RCT information. 
 1. Set $VMName to the name of the VM in question
 2. Set $Backup to the Backup that is in question with Get-VBRBackup
 3. Use Get-LastBackupDiskCBTInfo to fetch the most recent ChangeID information for the VM in $VMName and save it to some Variable ($BackupDisks)
-4. Use New-VMwareSnapshotDiskInfo to Snapshot the VM and get the current disk information, save it to some Variable ($Snap). This cmdlet returns four values in a hashtable: VMView, SnapView, SnapDisk, Snapshot.
+4. Use New-VMwareSnapshotDiskInfo to Snapshot the VM and get the current disk information, save it to some Variable ($SnapshotData). This cmdlet returns four values in a hashtable: VMView, SnapView, SnapDisk, Snapshot.
 5. Loop over all disks obtained from Get-LastBackupDiskCBTInfo and perform Compare-BackupAndProducionDiskCBTInfo on them. Compare-BackupAndProducionDiskCBTInfo requires 2 Parameters sourced from New-VMwareSnapshotDiskInfo and Get-LastBackupDiskCBTInfo:
 
--BackupDisk: Disk information from backup. Provides the Disk key and the ChangeID
-- SnapshotData: Should be the object returned by  New-VMwareSnapshotDiskInfo. 
+- BackupDisk: Disk information from backup. Provides the Disk key and the ChangeID
+- SnapshotData: Should be the object returned by New-VMwareSnapshotDiskInfo. 
 
 You will need to pass these from the values you stored in step 4.
 
