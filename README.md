@@ -2,9 +2,6 @@
 
 A series of Powershell modules that will check the CBT data from VMware production against Veeam Backups
 
-# WARNING
-
-Bug in the math, don't use yet, doesn't work right. Fixing.
 
 ## Requirements
 
