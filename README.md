@@ -15,7 +15,7 @@ The cmdlets must be used from a machine that meets the following requirementst
 
 - QueryDiskChangedAreas() requires a Snapshot as an argument, so the machine will need to temporarily be on snapshot. This is called by the Coommand New-VMwareSnapshotDiskInfo
 - None of the Modules currently clean up the snapshot so be sure to remove the snapshot
-- There will be some margin of error between the output of the commands and the data read during backup. This is due to the time between checking, and probably the influence of snapshots. Some difference depending on the workload of the machine. (Maybe 1 GB, Could be more or less) Precise measurements under 1 MB will not be feasible based on how QueryDiskChangedAreas() works.
+- There will be some margin of error between the output of the commands and the data read during backup. This is due to the time between checking, and probably the influence of snapshots. Some difference depending on the workload of the machine. (Maybe 1 GB, Could be more or less) Precise measurements under 1 GB will not be feasible based on how QueryDiskChangedAreas() works.
 - Be sure you are using the exact backup there are conerns about -- different backups will record different ChangeIDs, and the results will be invalid. This testing is best done live.
 
 ### Small note
