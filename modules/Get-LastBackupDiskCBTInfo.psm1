@@ -2,7 +2,6 @@ function Get-LastBackupDiskCBTInfo {
 	param (
 		[object[]]$Backup
 		)
-		$MostRecentOibs = $backup.GetOibs()|Where-Object {$_.VMname -eq "$VMname"} | Sort-Object -Property CreationTime -Descending |Select-Object -First 1
-		$LastBackupDiskCBTInfo = $MostRecentOibs.AuxData.DisksInfos
+		$LastBackupDiskCBTInfo = ($backup.GetLastOibs()|Where-Object {$_.VMname -eq "$VMname"})AuxData.DisksInfos
 		return $LastBackupDiskCBTInfo
 		}
