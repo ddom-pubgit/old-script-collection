@@ -81,10 +81,8 @@ function Get-StoragesPathsAndBlocksizeFromBackup {
 	param(
 		[Parameter(Mandatory=$true, Position=0)]
 		[Object[]]$Backup
-		#[Parameter(Mandatory=$true, Position=1)]
-		#[Object[]]$Repository
 	)
-	if($Backup.JobType -eq 'EpAgentBackup'){
+	if($Backup.JobType -eq 'EpAgentBackup' -or $Backup.Jobtype -eq 'SimpleBackupCopyPolicy'){
 		$Storages = $Backup[0].GetallChildrenStorages()
 	} else {
 		$Storages = $Backup[0].GetAllStorages()
@@ -105,9 +103,7 @@ function Get-StoragesPathsAndBlocksizeFromBackup {
 
 
 $Backup = Get-VBRBackup -Name $BackupName
-#$RestorePoints = Get-VBRRestorePoint -Backup $Backup
 $TargetRepository = $Backup.FindRepository()[0] #Jobs with Offloads in Copy Mode will return multiple entries from FindRepository() but both will be PerformanceTier. Safe to simply set the first
-#$StoragesStats = $RestorePoints.FindStorage() |Sort-Object -Property CreationTime -Descending |Select-Object -Property Partialpath,BlockAlignmentSize
 $StoragesStats = Get-StoragesPathsAndBlocksizeFromBackup -Backup $Backup
 $RepositoryData = @()
 
