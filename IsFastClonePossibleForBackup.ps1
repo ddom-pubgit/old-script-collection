@@ -114,7 +114,7 @@ If($TargetRepository.Type -eq 'ExtendableRepository'){
 		}
 	
 	$RepositoryData | Out-Host
-	$StoragesStats| Sort-Object -Property Creationtime | Select-Object -Property Extent,Path,Blocksize | Out-Host
+	$StoragesStats| Select-Object -Property Extent,Path,Blocksize | Out-Host
 } else {
 	Get-RepositoryTypeAndInfo -RepositoryToCheck $TargetRepository
 	$RepositoryData | Out-Host
