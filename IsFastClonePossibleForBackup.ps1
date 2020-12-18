@@ -83,9 +83,9 @@ function Get-StoragesPathsAndBlocksizeFromBackup {
 		[Object[]]$Backup
 	)
 	if($Backup.JobType -eq 'EpAgentBackup' -or $Backup.Jobtype -eq 'SimpleBackupCopyPolicy'){
-		$Storages = $Backup[0].GetallChildrenStorages()
+		$Storages = $Backup[0].GetallChildrenStorages() | Sort-Object -Property PartialPath, CreationTime -Descending
 	} else {
-		$Storages = $Backup[0].GetAllStorages()
+		$Storages = $Backup[0].GetAllStorages() | Sort-Object -Property PartialPath, CreationTime -Descending
 	}
 	$Repository = $Backup.FindRepository()[0]
 	$StoragePathsandBlocksize  = @()
@@ -96,7 +96,7 @@ function Get-StoragesPathsAndBlocksizeFromBackup {
 			$StoragePathsandBlocksize += New-Object -TypeName psobject -Property @{Extent=$Extent.Name;Path=$($Extent.Path.ToString(),$job.Name.ToString(),$Storage.filepath -join "\");BlockSize=$Storage.BlockAlignmentSize;CreationTime=$Storage.CreationTime}
 			}
 	} else {
-		$StoragePathsandBlocksize += $Storages | Sort-Object -Property CreationTime -Descending | Select-Object -Property PartialPath,BlockAlignmentSize
+		$StoragePathsandBlocksize += $Storages | Sort-Object -Property PartialPath, CreationTime -Descending | Select-Object -Property PartialPath,BlockAlignmentSize
 	}
 	return $StoragePathsandBlocksize
 }
