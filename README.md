@@ -12,6 +12,7 @@ output will be in the terminal
 ## Files
 
 IsFastclonePossibleForBackup.ps1 -> script you want to run. Send this to clients
+
 modules-isfastclonepossible.psm1 -> list of modules you can import for your own use. Might be useful in some cases (see Cloud Connect repositories note)
 
 
