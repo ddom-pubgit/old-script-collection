@@ -9,6 +9,12 @@ IsFastclonePossibleForBackup.ps1 -BackupName 'name of backup in UI'
 
 output will be in the terminal
 
+## Files
+
+IsFastclonePossibleForBackup.ps1 -> script you want to run. Send this to clients
+modules-isfastclonepossible.psm1 -> list of modules you can import for your own use. Might be useful in some cases (see Cloud Connect repositories note)
+
+
 ## Note for Cloud Connect Repositories
 
 Blocksize data for the backups will be returned, but when run on the tenant side, we cannot retrieve:
