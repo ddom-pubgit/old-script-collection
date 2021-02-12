@@ -1,6 +1,8 @@
 # IsFastclonePossibleForBackup
 
-A Quick Powershell Script to run on VBR to check if FastClone is possible for a Backup
+A Quick Powershell Script to run on VBR to check if FastClone is possible for a Backup. 
+
+Works on all versions (use the v11 script for v11 and later)
 
 
 ## Syntax
@@ -11,7 +13,7 @@ output will be in the terminal
 
 ## Files
 
-IsFastclonePossibleForBackup.ps1 -> script you want to run. Send this to clients
+IsFastclonePossibleForBackup.ps1 -> script you want to run. Send this to clients. Note there are two separate scripts, one for v10 and earlier, one for v11. 
 
 modules-isfastclonepossible.psm1 -> list of modules you can import for your own use. Might be useful in some cases (see Cloud Connect repositories note)
 
