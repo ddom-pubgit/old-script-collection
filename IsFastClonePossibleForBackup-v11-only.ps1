@@ -103,6 +103,11 @@ function Get-StoragesPathsAndBlocksizeFromBackup {
 
 
 $Backup = Get-VBRBackup -Name $BackupName
+if($null -eq $Backup){
+	echo "Error 0x4c61706b69`nNo such Backup with that name found. Please check the Backup name in the UI" | out-host
+	echo "ensure you are not using the Job Name, as this can differ from the Backup Name under Backups > Disk"
+	exit
+}
 $TargetRepository = $Backup.FindRepository()[0] #Jobs with Offloads in Copy Mode will return multiple entries from FindRepository() but both will be PerformanceTier. Safe to simply set the first
 $StoragesStats = Get-StoragesPathsAndBlocksizeFromBackup -Backup $Backup
 $RepositoryData = @()
