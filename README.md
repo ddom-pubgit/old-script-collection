@@ -1,6 +1,6 @@
 # Stop Eternally Running Tasks
 
-A simple script to assist with stopping eternally running tasks. 
+A simple script to assist with stopping eternally running tasks. Currently works for Hypervisor Jobs (VMware/HyperV Backup jobs and Backup copies) and Tape Jobs. Will check for Agents if there is demand.
 
 ## How to use
 
