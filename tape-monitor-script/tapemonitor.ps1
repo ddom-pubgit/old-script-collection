@@ -27,7 +27,7 @@ function Get-DeviceCount {
     $Drives = gwmi -Class Win32_TapeDrive
     $Changers = gwmi -Namespace root\wmi -Class mschangerparameters
     if($AllCheck){
-       $DeviceNum = $Drives.Count + $Changers.Count
+		$DeviceNum = $Drives.Count + $Changers.Count
     }
     elseif($DriveCheck){
 		$DeviceNum = $Drives.Count
@@ -51,7 +51,7 @@ Write-Log -LogText ((gwmi -Namespace root\wmi -Class mschangerparameters) | Out-
 Write-Log -LogText ($WorkingIscsi | Out-String)
 Write-Host "Script has started monitoring. It will auto-stop once an issue is detected or after 1 week"
 for($i=0;$i -lt "$Duration"; $i++){
-$TestCount = Get-DeviceCount
+	$TestCount = Get-DeviceCount
 	if ($WorkingCount -gt $TestCount){
 		Write-Log -LogText "One of the connected Devices has fallen offline"
 		Write-Log -LogText "Windows was not able to see the device via the gwmi commands"

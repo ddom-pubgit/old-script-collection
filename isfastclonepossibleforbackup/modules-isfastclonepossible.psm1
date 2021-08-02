@@ -59,6 +59,10 @@ function Get-RepositoryTypeAndInfo {
 	$RepositoryData += (Show-IsFastClonePossibleandClusterSize -BackupRepositoryInfo $RepoInfo)
 	return	$RepositoryData
 } 	
+
+<#Updated the v10 and v11 versions of the modules. Script is sometimes used to enumerate all backups, and current module breaks on imported backups as we use JobObject to get the Job name. Looks like GetMetaFilePath 
+contains the same, so we can build the path with just this. I'm assuming that MetaFilePath Elements on SOBR should always return the 1st element as the Backup name, but this might not be a safe assumtion. Keeping the original Backup Job Processing logic cause I'm too lazy to testt this thoroughly#>
+
 function Get-StoragesPathsAndBlocksizeFromBackup-v10 {
 	param(
 		[Parameter(Mandatory=$true, Position=0)]
@@ -74,7 +78,11 @@ function Get-StoragesPathsAndBlocksizeFromBackup-v10 {
 	if($Repository.Type -eq "ExtendableRepository"){
 		foreach($Storage in $Storages){
 			$Extent = $Repository.FindExtentRepo($Storage.Id)
-			$job = $Backup.FindJob()
+						if($Backup.JobID -eq '00000000-0000-0000-0000-000000000000'){
+				$JobName = $Backup.GetMetaFilePath().Elements[0]
+			}Else{
+				$jobName = $Backup.FindJob().Name
+			}
 			$StoragePathsandBlocksize += New-Object -TypeName psobject -Property @{Extent=$Extent.Name;Path=$($Extent.Path.ToString(),$job.Name.ToString(),$Storage.filepath -join "\");BlockSize=$Storage.BlockAlignmentSize;CreationTime=$Storage.CreationTime}
 			}
 	} else {
@@ -88,18 +96,18 @@ function Get-StoragesPathsAndBlocksizeFromBackup-v11 {
 		[Parameter(Mandatory=$true, Position=0)]
 		[Object[]]$Backup
 	)
-	if($Backup.JobType -eq 'EpAgentBackup' -or $Backup.Jobtype -eq 'SimpleBackupCopyPolicy'){
-		$Storages = $Backup[0].GetallChildrenStorages() | Sort-Object -Property PartialPath, CreationTime -Descending
-	} else {
-		$Storages = $Backup[0].GetAllStorages() | Sort-Object -Property PartialPath, CreationTime -Descending
-	}
+	$Storages = $Backup[0].GetallChildrenStorages() | Sort-Object -Property PartialPath, CreationTime -Descending
 	$Repository = $Backup.FindRepository()[0]
 	$StoragePathsandBlocksize  = @()
 	if($Repository.Type -eq "ExtendableRepository"){
 		foreach($Storage in $Storages){
 			$Extent = $Repository.FindRepositoryForExistingStorage($Storage.Id)
-			$job = $Backup.FindJob()
-			$StoragePathsandBlocksize += New-Object -TypeName psobject -Property @{Extent=$Extent.Name;Path=$($Extent.Path.ToString(),$job.Name.ToString(),$Storage.filepath -join "\");BlockSize=$Storage.BlockAlignmentSize;CreationTime=$Storage.CreationTime}
+			if($Backup.JobID -eq '00000000-0000-0000-0000-000000000000'){
+				$JobName = $Backup.GetMetaFilePath().Elements[0]
+			}Else{
+				$jobName = $Backup.FindJob().Name
+			}
+			$StoragePathsandBlocksize += New-Object -TypeName psobject -Property @{Extent=$Extent.Name;Path=$($Extent.Path.ToString(),$JobName.ToString(),$Storage.filepath -join "\");BlockSize=$Storage.BlockAlignmentSize;CreationTime=$Storage.CreationTime}
 			}
 	} else {
 		$StoragePathsandBlocksize += $Storages | Sort-Object -Property PartialPath, CreationTime -Descending | Select-Object -Property PartialPath,BlockAlignmentSize
