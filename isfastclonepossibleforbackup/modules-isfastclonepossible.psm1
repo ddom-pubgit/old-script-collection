@@ -78,7 +78,7 @@ function Get-StoragesPathsAndBlocksizeFromBackup-v10 {
 	if($Repository.Type -eq "ExtendableRepository"){
 		foreach($Storage in $Storages){
 			$Extent = $Repository.FindExtentRepo($Storage.Id)
-						if($Backup.JobID -eq '00000000-0000-0000-0000-000000000000'){
+			if($Backup.JobID -eq '00000000-0000-0000-0000-000000000000'){
 				$JobName = $Backup.GetMetaFilePath().Elements[0]
 			}Else{
 				$jobName = $Backup.FindJob().Name

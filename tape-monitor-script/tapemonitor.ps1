@@ -25,7 +25,7 @@ function Write-Log {
 
 function Get-DeviceCount {
     $Drives = gwmi -Class Win32_TapeDrive
-    $Changers = gwmi -Namespace root\wmi -Class mschangerparameters
+    $Changers = Get-WmiObject Win32_PnPSignedDriver | where {($_.DEVICECLASS -eq "MEDIUMCHANGER")}
     if($AllCheck){
 		$DeviceNum = $Drives.Count + $Changers.Count
     }
@@ -47,7 +47,7 @@ if($iscsi){$WorkingIscsi = Get-IscsiInformation}
 if(!(Test-Path $logpath)){New-Item -ItemType Directory -Path $logpath | Out-Null}
 Write-Log -LogText "Baseline Value: $WorkingCount"
 Write-Log -LogText ((Get-WmiObject Win32_PnPSignedDriver | Where-Object {($_.DEVICECLASS -eq "TapeDrive")} | Select-Object -Property Description, Location) | Out-String)
-Write-Log -LogText ((gwmi -Namespace root\wmi -Class mschangerparameters) | Out-String)
+Write-Log -LogText (Get-WmiObject Win32_PnPSignedDriver | where {($_.DEVICECLASS -eq "MEDIUMCHANGER")} | Out-String)
 Write-Log -LogText ($WorkingIscsi | Out-String)
 Write-Host "Script has started monitoring. It will auto-stop once an issue is detected or after 1 week"
 for($i=0;$i -lt "$Duration"; $i++){
@@ -58,7 +58,7 @@ for($i=0;$i -lt "$Duration"; $i++){
 		Write-Log -LogText "The script will now terminate, please add this log to your case"
 		Write-Log -LogText "Current Value: $TestCount"
 		Write-Log -LogText ((Get-WmiObject Win32_PnPSignedDriver | Where-Object {($_.DEVICECLASS -eq "TapeDrive")} | Select-Object -Property Description, Location) | Out-String)
-		Write-Log -LogText ((gwmi -Namespace root\wmi -Class mschangerparameters) | Out-String)
+		Write-Log -LogText (Get-WmiObject Win32_PnPSignedDriver | where {($_.DEVICECLASS -eq "MEDIUMCHANGER")} | Out-String)
 		if($iscsi){
 			Write-Log -LogText "Current iscsi Target Status:"
 			$CurrentIscsi = Get-IscsiInformation
