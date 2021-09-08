@@ -5,8 +5,9 @@ A simple script to assist with stopping eternally running tasks. Currently works
 ## How to use
 
 1. Copy the script to the Veeam Server (there is a hard check for this, must be Veeam Server)
-2. Open an Administrative Powershell Session or Veeam Console Powershell Sessioon
-3. Follow the prompts from the pop-up Windows to select the Job, the affected Job Session, and the affected Task Session
+2. Open an Administrative Powershell Session or Veeam Console Powershell Session
+3. If desired, get specific job with Get-VBRJob or Get-VBRTapeJob and pass it to -BackupJob or -TapeJob respectively
+4. Follow the prompts from the pop-up Windows to select the Job, the affected Job Session, and the affected Task Session
 
 ## Description of issue
 
