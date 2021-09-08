@@ -37,14 +37,14 @@ if(-not($TapeJob -or $BackupJob)){
 	$affectedjob = $alljobs | select-Object -Property Name, JobType, Type | Out-GridView -PassThru -Title "Select the affected Job (Choose only one!)"
 } elseif($TapeJob){
 	$affectedjob = $TapeJob
-} else { $affectedjob = $BackupJob }
-
-if($affectedjob.JobType -eq $null){
-		$ajob = Get-VBRTapeJob -Name $affectedjob.Name
-		$jsess = Get-VBRSession -Job $ajob | Sort-Object -Property CreationTime -Descending
 } else {
-		$ajob = Get-VBRJob -name $affectedjob.Name
-		$jsess = Get-VBRBackupSession |Where-Object {$_.jobId -eq $ajob.Id.Guid} | Sort-Object -Property CreationTime -Descending
+	$affectedjob = $BackupJob 
+}
+
+if($null -eq $affectedjob.JobType){
+		$jsess = Get-VBRSession -Job $affectedjob[0] | Sort-Object -Property CreationTime -Descending #I'm not sure why atm but for some reason setting the tape job as an array, which breaks parameterbinding on Get-VBRSession -Job. Workaround is in place, but need to research why this happens just for tape jobs
+} else {
+		$jsess = Get-VBRBackupSession |Where-Object {$_.jobId -eq $affectedjob.Id.Guid} | Sort-Object -Property CreationTime -Descending
 }
 
 Write-Host -ForegroundColor Yellow "Select the Job Session (Run) which has the continually running Task. It is recommended to sort by the Creation Date"
