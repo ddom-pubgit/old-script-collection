@@ -1,6 +1,11 @@
 <# A courtesy script to help gracefully resolve Task sessions which are running for eternity. Instead of hunting in the DB/Session lists in powershell, it just produces simple to use UI 
 Pickers. Right now, can only fix one job at a time, but I doubt there will be a situation where we need many of these.#>
 
+param(
+	[Veeam.Backup.PowerShell.Infos.VBRBackupToTapeJob[]]$TapeJob,
+	[Veeam.Backup.Core.CBackupJob[]]$BackupJob
+	)
+
 $date = Get-Date
 
 if(!(Get-Service VeeamBackupSvc -ErrorAction SilentlyContinue)){
@@ -24,18 +29,22 @@ Write-Host -ForegroundColor Green "This script should only be run at the request
 Write-Host -ForegroundColor Green "If this description does not match the issue you're facing, please stop the script with ctrl+C"
 
 Add-PSSNapin VeeamPSSnapin -ErrorAction SilentlyContinue
-$alljobs = Get-VBRJob
-$alljobs += Get-VBRTapeJob
 
-Write-Host -ForegroundColor Yellow "Select the job with the continually running Task."
-$affectedjob = $alljobs | select-Object -Property Name, JobType, Type | Out-GridView -PassThru -Title "Select the affected Job (Choose only one!)"
+if(-not($TapeJob -or $BackupJob)){
+	$alljobs = Get-VBRJob
+	$alljobs += Get-VBRTapeJob
+	Write-Host -ForegroundColor Yellow "Select the job with the continually running Task."
+	$affectedjob = $alljobs | select-Object -Property Name, JobType, Type | Out-GridView -PassThru -Title "Select the affected Job (Choose only one!)"
+} elseif($TapeJob){
+	$affectedjob = $TapeJob
+} else { $affectedjob = $BackupJob }
 
 if($affectedjob.JobType -eq $null){
 		$ajob = Get-VBRTapeJob -Name $affectedjob.Name
 		$jsess = Get-VBRSession -Job $ajob | Sort-Object -Property CreationTime -Descending
 } else {
 		$ajob = Get-VBRJob -name $affectedjob.Name
-		$jsess = $jsess = Get-VBRSession -Job $ajob | Sort-Object -Property CreationTime -Descending
+		$jsess = Get-VBRBackupSession |Where-Object {$_.jobId -eq $ajob.Id.Guid} | Sort-Object -Property CreationTime -Descending
 }
 
 Write-Host -ForegroundColor Yellow "Select the Job Session (Run) which has the continually running Task. It is recommended to sort by the Creation Date"
