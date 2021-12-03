@@ -34,7 +34,7 @@ if(-not($TapeJob -or $BackupJob)){
 	$alljobs = Get-VBRJob
 	$alljobs += Get-VBRTapeJob
 	Write-Host -ForegroundColor Yellow "Select the job with the continually running Task."
-	$affectedjob = $alljobs | select-Object -Property Name, JobType, Type | Out-GridView -PassThru -Title "Select the affected Job (Choose only one!)"
+	$affectedjob = $alljobs | select-Object -Property Name, JobType, Type, id | Out-GridView -PassThru -Title "Select the affected Job (Choose only one!)"
 } elseif($TapeJob){
 	$affectedjob = $TapeJob
 } else {
