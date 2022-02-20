@@ -1,0 +1,1 @@
+Write-host '' > C:\temp\stopscript.log
