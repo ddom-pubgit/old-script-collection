@@ -1,0 +1,37 @@
+
+
+$result = Compare-Object -ReferenceObject (select-xml -Xml $test -XPath //catalog/book/*) -DifferenceObject (Select-Xml -Xml $test2 -XPath //catalog/book/*) | ?{$_.SideIndicator -eq "=>"}
+PS /Users/vvvvvv/Desktop> $result.InputObject
+
+#Get Node name
+($result.InputObject[N].Node.ParentNode| Select-Object -Property name).Name    
+#Get Node Value
+$result.InputObject.Node
+
+-Xpath should be root node/wildcard for all beneath
+
+Select-XML looks to be key.
+
+
+
+Workflow
+
+Get Job Directory
+Check for archives, expand them if Necessary (internal tool, PS-tooling for this is fine, force people to upgrade
+Find all *Job*.log files (accidental matches are fine as string match will simply fail)
+Split Date from XML content, write as separate elements in array
+Loop over array to check XML history
+ß
+
+Check the most recent XML (XML'1) as the base comparison and write it to file.
+
+If we find a difference in XML'N, append XML'N to file, set XML'N as new base comparison, and continue
+
+Each difference should write the specific changed nodes ($result.InputObject) You can get node name with
+
+$Result.InputObject
+
+
+
+
+

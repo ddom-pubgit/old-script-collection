@@ -1,0 +1,5 @@
+'"$($DataSplit['"$i"'].Split()['"$i"'].Substring(0,$($DataSplit['"$i"'].Split()[$i].Length-1)))"=$DataSplit['"$i"'].Split()('"$($i+1)"']'
+
+for($i=0;$i -lt "30";$i++){
+write-host '"$($DataSplit['"$i"'].Split()[1].Substring(0,$($DataSplit['"$i"'].Split()[1].Length-1)))"=$DataSplit['"$i"'].Split()[2]'
+}
