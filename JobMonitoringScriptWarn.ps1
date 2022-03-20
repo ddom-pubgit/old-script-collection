@@ -90,19 +90,21 @@ function Add-JobToDatabase {
 # Core Logic
 
 if($Monitor){
-	$RunningJob = Get-JobExecutingScript | Out-Null
-	$JobDurationsDatabase = Import-JobDurationsDatabase 
-	If(-Not($JobDurationsDatabase.JobId -contains $RunningJob.id)){
-		Add-JobToDatabase -Job $RunningJob
-		$JobDurationsDatabase = Import-JobDurationsDatabase
-	}
-	$RunningJobAverage = $JobDurationsDatabase.AvgJobDurationSec | Where-Object {$_.JobID -eq $RunningJob.id}
-	$SafeMargin = ([int]$RunningJobAverage * $AcceptableVariancePercent)
-	Start-Sleep $RunningJobAverage
-	If(Get-VBRJob -Name $RunningJob.Name).IsRunning){
-		Start-Sleep ([math]::Round($SafeMargin))
+	Start-Job -ScriptBlock {
+		$RunningJob = Get-JobExecutingScript
+		$JobDurationsDatabase = Import-JobDurationsDatabase 
+		If(-Not($JobDurationsDatabase.JobId -contains $RunningJob.id)){
+			Add-JobToDatabase -Job $RunningJob
+			$JobDurationsDatabase = Import-JobDurationsDatabase
+		}
+		$RunningJobAverage = $JobDurationsDatabase.AvgJobDurationSec | Where-Object {$_.JobID -eq $RunningJob.id}
+		$SafeMargin = ([int]$RunningJobAverage * $AcceptableVariancePercent)
+		Start-Sleep $RunningJobAverage
 		If(Get-VBRJob -Name $RunningJob.Name).IsRunning){
-			Send-WarningEmail
+			Start-Sleep ([math]::Round($SafeMargin))
+			If(Get-VBRJob -Name $RunningJob.Name).IsRunning){
+				Send-WarningEmail
+			}
 		}
 	}
 }
